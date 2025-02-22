@@ -36,8 +36,6 @@ npm start
 ```
 The app will be available at `http://localhost:3000/`.
 
-## Screenshots
-(Add screenshots of the interface here)
 
 ## Deployment
 This project is deployed on [Netlify](https://www.netlify.com/). You can view the live version here: [Meal App](https://golden-duckanoo-fe0120.netlify.app/).
