@@ -38,5 +38,5 @@ The app will be available at `http://localhost:3000/`.
 
 
 ## Deployment
-This project is deployed on [Netlify](https://www.netlify.com/). You can view the live version here: [Meal App](https://golden-duckanoo-fe0120.netlify.app/).
+This project is deployed on [Vercel]https://vercel.com. You can view the live version here: [Meal App](https://meat-app-pi.vercel.app/).
 
