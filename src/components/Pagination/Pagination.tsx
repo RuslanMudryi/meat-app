@@ -1,8 +1,11 @@
 import './Pagination.css';
-import { useCallback, useEffect, useState } from 'react';
+import {
+  useCallback, useEffect, useState 
+} from 'react';
 import ReactPaginate from 'react-paginate';
 import { Meal } from '../../types/Meal';
 import { SetURLSearchParams } from 'react-router-dom';
+
 
 type Props = {
   productCountPerPage: number;
@@ -20,34 +23,46 @@ export const Pagination: React.FC<Props> = ({
   setSearchParams,
 }) => {
   const [currentPage, setCurrentPage] = useState(0);
-
-  const totalPages = Math.ceil(mealsFromServer.length / productCountPerPage);
-
+  const [totalPages, setTotalPages] = useState(0);
   const sliceProductArray = useCallback(
     (pageNumber: number) => {
       const startIndex = pageNumber * productCountPerPage;
       const endIndex = startIndex + productCountPerPage;
-      setMealsToShow(mealsFromServer.slice(startIndex, endIndex));
+
+      setMealsToShow([...mealsFromServer].slice(startIndex, endIndex));
     },
     [productCountPerPage, mealsFromServer, setMealsToShow],
   );
 
   useEffect(() => {
+    const pages = Math.ceil(mealsFromServer.length / productCountPerPage);
+
+    setTotalPages(pages);
+  }, [mealsFromServer, productCountPerPage]);
+
+  useEffect(() => {
+    const pages = Math.ceil(mealsFromServer.length / productCountPerPage);
     const page = searchParams.get('page');
+
     if (page) {
-      const safePage = Math.min(Math.max(+page, 0), totalPages - 1);
-      setCurrentPage(safePage);
-      sliceProductArray(safePage);
+      if (+page >= pages) {
+        setCurrentPage(pages - 1);
+      } else {
+        setCurrentPage(+page);
+      }
     }
-  }, [searchParams, totalPages, sliceProductArray]);
+  }, [searchParams, mealsFromServer.length, productCountPerPage]);
+
+  useEffect(() => {
+    sliceProductArray(currentPage);
+  }, [currentPage, sliceProductArray]);
 
   const handlePageClick = (data: { selected: number }) => {
     setCurrentPage(data.selected);
     sliceProductArray(data.selected);
+    searchParams.set('page', data.selected.toString());
 
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('page', data.selected.toString());
-    setSearchParams(newSearchParams);
+    setSearchParams(searchParams);
   };
 
   return (
@@ -70,7 +85,7 @@ export const Pagination: React.FC<Props> = ({
         previousLinkClassName={'pagination-item-link'}
         pageLinkClassName={'pagination-item-link'}
         nextClassName={
-          'pagination-item--switch button--secondary button button--round'
+          ' pagination-item--switch button--secondary button button--round '
         }
         nextLinkClassName={'pagination-item-link'}
         breakClassName={'pagination-item'}
